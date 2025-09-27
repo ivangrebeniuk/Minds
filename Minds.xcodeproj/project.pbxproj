@@ -6,8 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		077A407631750399B5AAED57 /* Pods_Minds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EACE2B66598FF85166B26034 /* Pods_Minds.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		28722C5DE2AF8C4BEA4F267F /* Pods-Minds.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Minds.debug.xcconfig"; path = "Target Support Files/Pods-Minds/Pods-Minds.debug.xcconfig"; sourceTree = "<group>"; };
+		447E8F8685BC547D17CAD487 /* Pods-Minds.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Minds.release.xcconfig"; path = "Target Support Files/Pods-Minds/Pods-Minds.release.xcconfig"; sourceTree = "<group>"; };
 		48A4AAB92E83176D00C3E6BD /* Minds.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Minds.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EACE2B66598FF85166B26034 /* Pods_Minds.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Minds.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -36,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				077A407631750399B5AAED57 /* Pods_Minds.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -47,6 +55,8 @@
 			children = (
 				48A4AABB2E83176D00C3E6BD /* Minds */,
 				48A4AABA2E83176D00C3E6BD /* Products */,
+				EB625358D36A2463E27A148B /* Pods */,
+				AD9EFA118D2E8838680D29CE /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,6 +68,23 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		AD9EFA118D2E8838680D29CE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EACE2B66598FF85166B26034 /* Pods_Minds.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		EB625358D36A2463E27A148B /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				28722C5DE2AF8C4BEA4F267F /* Pods-Minds.debug.xcconfig */,
+				447E8F8685BC547D17CAD487 /* Pods-Minds.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -65,9 +92,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 48A4AACC2E83176E00C3E6BD /* Build configuration list for PBXNativeTarget "Minds" */;
 			buildPhases = (
+				6F6C8BC310114E5E813AF61F /* [CP] Check Pods Manifest.lock */,
 				48A4AAB52E83176D00C3E6BD /* Sources */,
 				48A4AAB62E83176D00C3E6BD /* Frameworks */,
 				48A4AAB72E83176D00C3E6BD /* Resources */,
+				7B1881AC07B413946D1937A1 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -77,8 +106,6 @@
 				48A4AABB2E83176D00C3E6BD /* Minds */,
 			);
 			name = Minds;
-			packageProductDependencies = (
-			);
 			productName = Minds;
 			productReference = 48A4AAB92E83176D00C3E6BD /* Minds.app */;
 			productType = "com.apple.product-type.application";
@@ -127,6 +154,52 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		6F6C8BC310114E5E813AF61F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Minds-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7B1881AC07B413946D1937A1 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Minds/Pods-Minds-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Minds/Pods-Minds-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Minds/Pods-Minds-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		48A4AAB52E83176D00C3E6BD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -140,11 +213,13 @@
 /* Begin XCBuildConfiguration section */
 		48A4AACD2E83176E00C3E6BD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 28722C5DE2AF8C4BEA4F267F /* Pods-Minds.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Minds/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -166,11 +241,13 @@
 		};
 		48A4AACE2E83176E00C3E6BD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 447E8F8685BC547D17CAD487 /* Pods-Minds.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Minds/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
