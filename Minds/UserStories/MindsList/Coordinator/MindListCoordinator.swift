@@ -23,8 +23,16 @@ final class MindListCoordinator {
     
     func start(with navigationController: UINavigationController) {
         self.navigationController = navigationController
-        let mindListModule = mindsListAssembly.assemble()
+        let mindListModule = mindsListAssembly.assemble(output: self)
         
         navigationController.pushViewController(mindListModule, animated: true)
+    }
+}
+
+extension MindListCoordinator: IMindsListOutput {
+    
+    func didSelectMind(with id: UUID) {
+        print("Мне делегирвоали обрабатывать открытие заметки")
+        print(id)
     }
 }
