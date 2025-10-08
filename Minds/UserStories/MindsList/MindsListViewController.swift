@@ -8,10 +8,6 @@
 import SnapKit
 import UIKit
 
-protocol IMindsListView: AnyObject {
-    
-}
-
 final class MindsListViewController: UIViewController {
     
     // Diffable Data Source
@@ -30,9 +26,7 @@ final class MindsListViewController: UIViewController {
     private lazy var addNewMindButton = UIButton()
     private lazy var tableView = UITableView()
     
-    // Temporary SOLUTION
-    private lazy var dataSource: DataSource = makeDataSource()
-    private var items: [Item] = []
+    private lazy var dataSource = makeDataSource()
     
     // MARK: - Init
     
@@ -52,10 +46,7 @@ final class MindsListViewController: UIViewController {
         
         setUpUI()
         view.backgroundColor = .systemBackground
-        items.append(.init(title: "Заметка 1", text: nil))
-        items.append(.init(title: "Заметка 2", text: "Как делашки, пес?"))
-        items.append(.init(title: "Заметка 3", text: "Лупа лупа лупа"))
-        applySnapshot(animatingDifferences: false)
+        presenter.viewDidLoad()
     }
     
     // MARK: - Private
@@ -104,7 +95,7 @@ final class MindsListViewController: UIViewController {
         addNewMindButton.addAction(
             UIAction { [weak self] _ in
                 print("BUTTON TAPPED!")
-                self?.addNewNote()
+                self?.presenter.didTapAddNewMind()
             },
             for: .touchUpInside
         )
@@ -132,19 +123,6 @@ final class MindsListViewController: UIViewController {
             return mindCell
         }
     }
-    
-    private func applySnapshot(animatingDifferences: Bool = true) {
-        var snapshot = Snapshot()
-        snapshot.appendSections([.main])
-        snapshot.appendItems(items, toSection: .main)
-        dataSource.apply(snapshot, animatingDifferences: animatingDifferences)
-    }
-    
-    private func addNewNote() {
-        let newItem = Item(title: "Труляля", text: "Число от 1 до 10: \(Int.random(in: 0...10))")
-        items.insert(newItem, at: 0)
-        applySnapshot()
-    }
 }
 
 // MARK: - UITableViewDelegate
@@ -153,14 +131,14 @@ extension MindsListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        presenter.didSelectMind(at: indexPath.row)
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(
             style: .destructive, title: ""
         ) { [weak self] (_, _, completionHandler) in
-            self?.items.remove(at: indexPath.row)
-            self?.applySnapshot()
+            self?.presenter.didDeleteMind(at: indexPath.row)
             completionHandler(true)
     
         }
@@ -173,9 +151,33 @@ extension MindsListViewController: UITableViewDelegate {
 
 extension MindsListViewController: IMindsListView {
     
+    func updateTableView(with items: [MindCell.Model]) {
+        var snapshot = Snapshot()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(items)
+        dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+    func deleteItem(_ item: MindCell.Model) {
+        var snapshot = dataSource.snapshot()
+        snapshot.deleteItems([item])
+        dataSource.apply(snapshot)
+    }
+    
+    func insertItem(_ item: MindCell.Model) {
+        var snapshot = dataSource.snapshot()
+        if let first = snapshot.itemIdentifiers.first {
+            snapshot.insertItems([item], beforeItem: first)
+        } else {
+            snapshot.appendItems([item])
+        }
+        
+        dataSource.apply(snapshot)
+    }
 }
 
 private extension String {
+    
     static let navBarTitle = "Minds"
     static let cellIdentifier = "MindsListCellIdentifier"
 }

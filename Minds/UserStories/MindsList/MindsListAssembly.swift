@@ -12,9 +12,12 @@ final class MindsListAssembly {
     
     init() {}
     
-    func assemble() -> UIViewController {
+    func assemble(output: IMindsListOutput) -> UIViewController {
         let viewModelFactory = MindsListViewModelFactory()
-        let presenter = MindsListPresenter(viewModelFactory: viewModelFactory)
+        let presenter = MindsListPresenter(
+            viewModelFactory: viewModelFactory,
+            output: output
+        )
         let viewController = MindsListViewController(presenter: presenter)
         presenter.view = viewController
         
