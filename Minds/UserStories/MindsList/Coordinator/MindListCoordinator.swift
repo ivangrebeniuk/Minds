@@ -10,14 +10,17 @@ import UIKit
 
 final class MindListCoordinator {
     
-    let mindsListAssembly: MindsListAssembly
-    var navigationController: UIViewController?
+    private let mindsListAssembly: MindsListAssembly
+    private let mindDetailsCoordinator: MindDetailsCoordinator
+    private var navigationController: UINavigationController?
     
     init(
         mindsListAssembly: MindsListAssembly,
-        navigationController: UIViewController? = nil
+        mindDetailsCoordinator: MindDetailsCoordinator,
+        navigationController: UINavigationController? = nil
     ) {
         self.mindsListAssembly = mindsListAssembly
+        self.mindDetailsCoordinator = mindDetailsCoordinator
         self.navigationController = navigationController
     }
     
@@ -32,7 +35,6 @@ final class MindListCoordinator {
 extension MindListCoordinator: IMindsListOutput {
     
     func didSelectMind(with id: UUID) {
-        print("Мне делегирвоали обрабатывать открытие заметки")
-        print(id)
+        mindDetailsCoordinator.start(from: navigationController, mindId: id)
     }
 }
