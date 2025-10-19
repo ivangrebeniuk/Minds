@@ -34,7 +34,7 @@ final class MindListCoordinator {
 
 extension MindListCoordinator: IMindsListOutput {
     
-    func didSelectMind(with id: UUID) {
+    func didSelectMind(with id: UUID?) {
         mindDetailsCoordinator.start(from: navigationController, mindId: id)
     }
 }

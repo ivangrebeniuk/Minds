@@ -12,11 +12,9 @@ final class MindDetailsAssembly {
     
     func assemble(with mindId: UUID?) -> UIViewController {
         
-        let viewModelFactory = MindDetailsViewModelFactory()
         
         let presenter = MindDetailsPresenter(
-            mindId: mindId,
-            viewModelFactory: viewModelFactory
+            mindId: mindId
         )
         
         let viewController = MindDetailsViewController(presenter: presenter)

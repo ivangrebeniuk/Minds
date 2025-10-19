@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct Model {
+struct MindModel: Identifiable, Codable {
     let id: UUID
-    let text: String
+    var text: String
+    var time: Date
 }
