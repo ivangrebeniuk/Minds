@@ -9,7 +9,7 @@ import Foundation
 
 protocol IMindsListOutput: AnyObject {
     
-    func didSelectMind(with id: UUID)
+    func didSelectMind(with id: UUID?)
 }
 
 protocol IMindsListView: AnyObject {
@@ -69,10 +69,7 @@ extension MindsListPresenter: IMindsListPresenter {
     }
     
     func didTapAddNewMind() {
-        // TEMPORARY SOLUTION
-        let newModel = MindCell.Model(title: "Новая заметка", text: "Тест тест тест")
-        models.insert(newModel, at: 0)
-        view?.insertItem(newModel)
+        output?.didSelectMind(with: nil)
     }
     
     func didSelectMind(at index: Int) {
