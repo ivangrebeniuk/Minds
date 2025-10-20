@@ -10,11 +10,11 @@ import UIKit
 
 final class MindDetailsAssembly {
     
-    func assemble(with mindId: UUID?) -> UIViewController {
-        
+    func assemble(with mindId: UUID?, output: IMindDetailsOutput?) -> UIViewController {
         
         let presenter = MindDetailsPresenter(
-            mindId: mindId
+            mindId: mindId,
+            output: output
         )
         
         let viewController = MindDetailsViewController(presenter: presenter)

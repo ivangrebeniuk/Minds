@@ -8,9 +8,15 @@
 import Foundation
 import UIKit
 
+protocol IMindDetailsModuleOutput: AnyObject {
+    
+    func didSaveNewMind()
+}
+
 final class MindDetailsCoordinator {
     
     private let mindDetailsAssembly: MindDetailsAssembly
+    private weak var moduleOutput: IMindDetailsModuleOutput?
     private weak var transitionHandler: UINavigationController?
     
     init(mindDetailsAssembly: MindDetailsAssembly) {
@@ -19,11 +25,26 @@ final class MindDetailsCoordinator {
     
     func start(
         from transitionHandler: UINavigationController?,
-        mindId: UUID?
+        mindId: UUID?,
+        moduleOutput: IMindDetailsModuleOutput?
+        
     ) {
         self.transitionHandler = transitionHandler
-        let viewController = mindDetailsAssembly.assemble(with: mindId)
+        self.moduleOutput = moduleOutput
+        let viewController = mindDetailsAssembly.assemble(
+            with: mindId,
+            output: self
+        )
         
         transitionHandler?.pushViewController(viewController, animated: true)
+    }
+}
+
+extension MindDetailsCoordinator: IMindDetailsOutput {
+    
+    func didTapSaveButton() {
+        print("Did tap save")
+        moduleOutput?.didSaveNewMind()
+        transitionHandler?.popViewController(animated: true)
     }
 }

@@ -8,11 +8,17 @@
 import Foundation
 import UIKit
 
+protocol IMindsListModuleInput: AnyObject {
+    
+    func didSaveNewMind()
+}
+
 final class MindListCoordinator {
     
     private let mindsListAssembly: MindsListAssembly
     private let mindDetailsCoordinator: MindDetailsCoordinator
     private var navigationController: UINavigationController?
+    private weak var mindsListModuleInput: IMindsListModuleInput?
     
     init(
         mindsListAssembly: MindsListAssembly,
@@ -27,14 +33,30 @@ final class MindListCoordinator {
     func start(with navigationController: UINavigationController) {
         self.navigationController = navigationController
         let mindListModule = mindsListAssembly.assemble(output: self)
-        
-        navigationController.pushViewController(mindListModule, animated: true)
+        self.mindsListModuleInput = mindListModule.moduleInput
+        navigationController.pushViewController(mindListModule.viewController, animated: true)
     }
 }
+
+// MARK: - IMindsListOutput
 
 extension MindListCoordinator: IMindsListOutput {
     
     func didSelectMind(with id: UUID?) {
-        mindDetailsCoordinator.start(from: navigationController, mindId: id)
+        mindDetailsCoordinator.start(
+            from: navigationController,
+            mindId: id,
+            moduleOutput: self
+        )
+    }
+}
+
+// MARK: - IMindDetailsModuleOutput
+
+extension MindListCoordinator: IMindDetailsModuleOutput {
+    
+    func didSaveNewMind() {
+        print("Вот тут мы должны дернуть метод input протокола у презентера")
+        mindsListModuleInput?.didSaveNewMind()
     }
 }

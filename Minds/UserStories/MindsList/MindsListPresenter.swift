@@ -85,3 +85,12 @@ extension MindsListPresenter: IMindsListPresenter {
         view?.deleteItem(model)
     }
 }
+
+// MARK: -  IMindsListModuleInput
+
+extension MindsListPresenter: IMindsListModuleInput {
+    
+    func didSaveNewMind() {
+        print("Надо подтянуть данные из БД и обновить UI")
+    }
+}
