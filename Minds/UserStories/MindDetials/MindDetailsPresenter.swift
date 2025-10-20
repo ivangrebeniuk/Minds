@@ -7,6 +7,11 @@
 
 import Foundation
 
+protocol IMindDetailsOutput: AnyObject {
+        
+    func didTapSaveButton()
+}
+
 protocol IMindDetailsView: AnyObject {
     
     func updateUI(with text: String)
@@ -17,24 +22,24 @@ protocol IMindDetailsView: AnyObject {
 protocol IMindDetailsPresenter {
     
     func viewDidLoad()
-    
-    func didTapBackButton()
-    
+        
     func didTapSaveButton(with text: String)
 }
 
 final class MindDetailsPresenter {
     
     weak var view: IMindDetailsView?
+    private weak var output: IMindDetailsOutput?
     private let mindId: UUID?
     private var mindModel: MindModel?
     
     // MARK: - Init
     
     init(
-        mindId: UUID?,
+        mindId: UUID?, output: IMindDetailsOutput?
     ) {
         self.mindId = mindId
+        self.output = output
     }
 }
 
@@ -55,9 +60,6 @@ extension MindDetailsPresenter: IMindDetailsPresenter {
         )
         view?.updateUI(with: "Текст заметки из БД")
     }
-        
-    func didTapBackButton() {}
-    
 
     func didTapSaveButton(with text: String) {
         if mindModel == nil {
@@ -72,5 +74,6 @@ extension MindDetailsPresenter: IMindDetailsPresenter {
             mindModel?.time = .now
             print("🔜Тут мы должны сохранить модельку в CoreData вызвав метод SaveMind")
         }
+        output?.didTapSaveButton()
     }
 }

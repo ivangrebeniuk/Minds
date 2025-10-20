@@ -12,7 +12,7 @@ final class MindsListAssembly {
     
     init() {}
     
-    func assemble(output: IMindsListOutput) -> UIViewController {
+    func assemble(output: IMindsListOutput) -> Module<IMindsListModuleInput> {
         let viewModelFactory = MindsListViewModelFactory()
         let presenter = MindsListPresenter(
             viewModelFactory: viewModelFactory,
@@ -21,6 +21,6 @@ final class MindsListAssembly {
         let viewController = MindsListViewController(presenter: presenter)
         presenter.view = viewController
         
-        return viewController
+        return Module(viewController: viewController, moduleInput: presenter)
     }
 }
