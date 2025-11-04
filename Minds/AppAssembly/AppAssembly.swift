@@ -9,6 +9,8 @@ import Foundation
 
 final class AppAssembly {
     
+    private lazy var coreDataService = CoreDataService()
+    
     var mindsListCoordinator: MindListCoordinator {
         MindListCoordinator(
             mindsListAssembly: mindsListAssembly,
@@ -21,10 +23,12 @@ final class AppAssembly {
     }
     
     private var mindsListAssembly: MindsListAssembly {
-        MindsListAssembly()
+        MindsListAssembly(mindService: mindService)
     }
     
     private var mindDetailsAssembly: MindDetailsAssembly {
-        MindDetailsAssembly()
+        MindDetailsAssembly(mindService: mindService)
     }
+    
+    private lazy var mindService = MindService(coreDataService: coreDataService)
 }

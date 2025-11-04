@@ -52,7 +52,7 @@ final class MindCell: UITableViewCell {
 extension MindCell: ConfigurableView {
     
     struct Model: Hashable, Equatable {
-        let id = UUID()
+        let id: UUID
         let title: String
         let text: String?
         
