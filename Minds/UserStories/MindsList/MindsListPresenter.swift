@@ -14,22 +14,29 @@ protocol IMindsListOutput: AnyObject {
 
 protocol IMindsListView: AnyObject {
     
+    @MainActor
     func updateTableView(with: [MindCell.Model])
     
+    @MainActor
     func insertItem(_ item: MindCell.Model)
     
+    @MainActor
     func deleteItem(_ item: MindCell.Model)
     
 }
 
 protocol IMindsListPresenter: AnyObject {
     
+    @MainActor
     func viewDidLoad()
     
+    @MainActor
     func didTapAddNewMind()
     
+    @MainActor
     func didSelectMind(at index: Int)
     
+    @MainActor
     func didDeleteMind(at index: Int)
 }
 
@@ -58,18 +65,15 @@ final class MindsListPresenter {
 
 // MARK: - IMindsListPresenter
 
-extension MindsListPresenter: @preconcurrency IMindsListPresenter {
+extension MindsListPresenter: IMindsListPresenter {
     
     @MainActor
     func viewDidLoad() {
-        Task { [weak self] in
-            guard let self else { return }
-            let minds = mindService.cachedMinds
-            models = minds.map {
-                self.viewModelFactory.makeViewModel($0)
-            }
-            view?.updateTableView(with: models)
+        let minds = mindService.cachedMinds
+        models = minds.map {
+            self.viewModelFactory.makeViewModel($0)
         }
+        view?.updateTableView(with: models)
     }
 
     
@@ -77,11 +81,13 @@ extension MindsListPresenter: @preconcurrency IMindsListPresenter {
         output?.didSelectMind(with: nil)
     }
     
+    @MainActor
     func didSelectMind(at index: Int) {
         let model = models[index]
         output?.didSelectMind(with: model.id)
     }
     
+    @MainActor
     func didDeleteMind(at index: Int) {
         guard index < models.count else {
             return
@@ -90,7 +96,6 @@ extension MindsListPresenter: @preconcurrency IMindsListPresenter {
         Task { [weak self] in
             guard let self else { return }
             await mindService.deleteMind(withId: model.id)
-            view?.deleteItem(model)
         }
     }
 }
@@ -100,14 +105,21 @@ extension MindsListPresenter: @preconcurrency IMindsListPresenter {
 extension MindsListPresenter: @preconcurrency IMindsListModuleInput {
     
     @MainActor
-    func didSaveNewMind() {
-        Task { [weak self] in
-            guard let self else { return }
-            let minds = mindService.cachedMinds
-            models = minds.map {
-                self.viewModelFactory.makeViewModel($0)
-            }
-            view?.updateTableView(with: models)
+    func didSaveMind() {
+        let minds = mindService.cachedMinds
+        models = minds.map {
+            self.viewModelFactory.makeViewModel($0)
         }
+        view?.updateTableView(with: models)
+    }
+}
+
+extension MindsListPresenter: MindServiceDelegate {
+    
+    @MainActor
+    func didReloadCache() {
+        let minds = mindService.cachedMinds
+        models = minds.map { self.viewModelFactory.makeViewModel($0) }
+        view?.updateTableView(with: models)
     }
 }

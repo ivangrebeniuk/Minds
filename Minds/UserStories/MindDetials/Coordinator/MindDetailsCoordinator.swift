@@ -10,6 +10,7 @@ import UIKit
 
 protocol IMindDetailsModuleOutput: AnyObject {
     
+    @MainActor
     func didSaveMind()
 }
 
@@ -40,11 +41,10 @@ final class MindDetailsCoordinator {
     }
 }
 
-extension MindDetailsCoordinator: @preconcurrency IMindDetailsOutput {
+extension MindDetailsCoordinator: IMindDetailsOutput {
     
     @MainActor
     func didTapSaveButton() {
-        print("Did tap save")
         moduleOutput?.didSaveMind()
         transitionHandler?.popViewController(animated: true)
     }

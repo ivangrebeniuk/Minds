@@ -10,7 +10,7 @@ import UIKit
 
 protocol IMindsListModuleInput: AnyObject {
     
-    func didSaveNewMind()
+    func didSaveMind()
 }
 
 final class MindListCoordinator {
@@ -56,6 +56,6 @@ extension MindListCoordinator: IMindsListOutput {
 extension MindListCoordinator: IMindDetailsModuleOutput {
     
     func didSaveMind() {
-        mindsListModuleInput?.didSaveNewMind()
+        mindsListModuleInput?.didSaveMind()
     }
 }

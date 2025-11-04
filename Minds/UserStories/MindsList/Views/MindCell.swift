@@ -61,7 +61,7 @@ extension MindCell: ConfigurableView {
         }
         
         static func == (lhs: Model, rhs: Model) -> Bool {
-            lhs.id == rhs.id
+            lhs.id == rhs.id && lhs.text == rhs.text && lhs.title == rhs.title
         }
     }
     

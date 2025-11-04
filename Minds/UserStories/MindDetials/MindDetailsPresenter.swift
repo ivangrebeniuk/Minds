@@ -8,7 +8,8 @@
 import Foundation
 
 protocol IMindDetailsOutput: AnyObject {
-        
+    
+    @MainActor
     func didTapSaveButton()
 }
 
@@ -21,8 +22,10 @@ protocol IMindDetailsView: AnyObject {
 
 protocol IMindDetailsPresenter {
     
+    @MainActor
     func viewDidLoad()
-        
+      
+    @MainActor
     func didTapSaveButton(with text: String)
 }
 
@@ -54,15 +57,13 @@ final class MindDetailsPresenter {
     @MainActor
     private func getMindModel(byId id: UUID) {
         let minds = mindService.cachedMinds
-        mindModel = minds.first(where: {
-            $0.id == id
-        })
+        mindModel = minds.first(where: { $0.id == id })
     }
 }
 
 // MARK: - IMindDetailsPresenter
 
-extension MindDetailsPresenter: @preconcurrency IMindDetailsPresenter {
+extension MindDetailsPresenter: IMindDetailsPresenter {
     
     @MainActor
     func viewDidLoad() {
@@ -70,13 +71,12 @@ extension MindDetailsPresenter: @preconcurrency IMindDetailsPresenter {
             view?.setUpEmptyState()
             return
         }
-        Task {
-            getMindModel(byId: mindId)
-            if let mindModel {
-                view?.updateUI(with: mindModel.text)
-            } else {
-                view?.setUpEmptyState()
-            }
+
+        getMindModel(byId: mindId)
+        if let mindModel {
+            view?.updateUI(with: mindModel.text)
+        } else {
+            view?.setUpEmptyState()
         }
     }
     
@@ -97,8 +97,6 @@ extension MindDetailsPresenter: @preconcurrency IMindDetailsPresenter {
                 }
             }
         } else {
-            mindModel?.text = text
-            mindModel?.timestamp = .now
             Task { [weak self] in
                 guard let self, var mindModel else { return }
                 mindModel.timestamp = .now
@@ -107,7 +105,7 @@ extension MindDetailsPresenter: @preconcurrency IMindDetailsPresenter {
                     try await mindService.saveMind(mindModel)
                     output?.didTapSaveButton()
                 } catch {
-                    print("Не удалось сохранить новую заметку")
+                    print("Не удалось обновить заметку заметку")
                 }
             }
         }
