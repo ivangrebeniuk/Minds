@@ -1,5 +1,5 @@
 //
-//  NoteModel.swift
+//  Mind.swift
 //  Minds
 //
 //  Created by Иван Гребенюк on 27.09.2025.
@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct MindModel: Identifiable, Codable {
+struct Mind: Identifiable, Codable {
     let id: UUID
     var text: String
-    var time: Date
+    var timestamp: Date
 }

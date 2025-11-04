@@ -38,35 +38,40 @@ final class MindsListPresenter {
     weak var view: IMindsListView?
     weak var output: IMindsListOutput?
     private let viewModelFactory: IMindsListViewModelFactory
+    private let mindService: MindServiceProtocol
+    
+    // Models
     private var models: [MindCell.Model] = []
     
     // MARK: - Init
     
     init(
         viewModelFactory: IMindsListViewModelFactory,
+        mindService: MindServiceProtocol,
         output: IMindsListOutput?
     ) {
         self.viewModelFactory = viewModelFactory
+        self.mindService = mindService
         self.output = output
-    }
-    
-    // MARK: - Private
-    
-    private func makeViewModels() {
-        models.append(.init(title: "Заметка 1", text: nil))
-        models.append(.init(title: "Заметка 2", text: "Как делашки, пес?"))
-        models.append(.init(title: "Заметка 3", text: "Лупа лупа лупа"))
     }
 }
 
 // MARK: - IMindsListPresenter
 
-extension MindsListPresenter: IMindsListPresenter {
+extension MindsListPresenter: @preconcurrency IMindsListPresenter {
     
+    @MainActor
     func viewDidLoad() {
-        makeViewModels()
-        view?.updateTableView(with: models)
+        Task { [weak self] in
+            guard let self else { return }
+            let minds = mindService.cachedMinds
+            models = minds.map {
+                self.viewModelFactory.makeViewModel($0)
+            }
+            view?.updateTableView(with: models)
+        }
     }
+
     
     func didTapAddNewMind() {
         output?.didSelectMind(with: nil)
@@ -82,15 +87,27 @@ extension MindsListPresenter: IMindsListPresenter {
             return
         }
         let model = models.remove(at: index)
-        view?.deleteItem(model)
+        Task { [weak self] in
+            guard let self else { return }
+            await mindService.deleteMind(withId: model.id)
+            view?.deleteItem(model)
+        }
     }
 }
 
 // MARK: -  IMindsListModuleInput
 
-extension MindsListPresenter: IMindsListModuleInput {
+extension MindsListPresenter: @preconcurrency IMindsListModuleInput {
     
+    @MainActor
     func didSaveNewMind() {
-        print("Надо подтянуть данные из БД и обновить UI")
+        Task { [weak self] in
+            guard let self else { return }
+            let minds = mindService.cachedMinds
+            models = minds.map {
+                self.viewModelFactory.makeViewModel($0)
+            }
+            view?.updateTableView(with: models)
+        }
     }
 }

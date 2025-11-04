@@ -10,12 +10,17 @@ import UIKit
 
 final class MindsListAssembly {
     
-    init() {}
+    private let mindService: MindServiceProtocol
+    
+    init(mindService: MindServiceProtocol) {
+        self.mindService = mindService
+    }
     
     func assemble(output: IMindsListOutput) -> Module<IMindsListModuleInput> {
         let viewModelFactory = MindsListViewModelFactory()
         let presenter = MindsListPresenter(
             viewModelFactory: viewModelFactory,
+            mindService: mindService,
             output: output
         )
         let viewController = MindsListViewController(presenter: presenter)

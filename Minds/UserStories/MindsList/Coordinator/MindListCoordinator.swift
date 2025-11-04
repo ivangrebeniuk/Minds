@@ -55,8 +55,7 @@ extension MindListCoordinator: IMindsListOutput {
 
 extension MindListCoordinator: IMindDetailsModuleOutput {
     
-    func didSaveNewMind() {
-        print("Вот тут мы должны дернуть метод input протокола у презентера")
+    func didSaveMind() {
         mindsListModuleInput?.didSaveNewMind()
     }
 }
