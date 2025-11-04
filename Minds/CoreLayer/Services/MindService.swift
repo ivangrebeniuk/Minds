@@ -7,6 +7,12 @@
 
 import Foundation
 
+@MainActor
+protocol MindServiceDelegate: AnyObject {
+    
+    func didReloadCache()
+}
+
 protocol MindServiceProtocol {
     
     @MainActor
@@ -19,12 +25,17 @@ protocol MindServiceProtocol {
 
 final class MindService {
     
+    weak var delegate: MindServiceDelegate?
     private let coreDataService: CoreDataServiceProtocol
     @MainActor
     private lazy var minds: [Mind] = []
     
     init(coreDataService: CoreDataServiceProtocol) {
         self.coreDataService = coreDataService
+        
+        Task { [weak self] in
+            await self?.reloadCache()
+        }
     }
     
     // MARK: - Private
@@ -50,7 +61,10 @@ final class MindService {
     
     private func reloadCache() async {
         let minds = await fetchMinds()
-        await MainActor.run { self.minds = minds }
+        await MainActor.run { [weak self] in
+            self?.minds = minds
+            self?.delegate?.didReloadCache()
+        }
     }
 }
 

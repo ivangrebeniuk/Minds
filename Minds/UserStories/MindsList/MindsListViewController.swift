@@ -149,8 +149,9 @@ extension MindsListViewController: UITableViewDelegate {
 
 // MARK: - IMindsListView
 
-extension MindsListViewController: IMindsListView {
+extension MindsListViewController: @preconcurrency IMindsListView {
     
+    @MainActor
     func updateTableView(with items: [MindCell.Model]) {
         var snapshot = Snapshot()
         snapshot.appendSections([.main])
@@ -158,12 +159,14 @@ extension MindsListViewController: IMindsListView {
         dataSource.apply(snapshot, animatingDifferences: true)
     }
     
+    @MainActor
     func deleteItem(_ item: MindCell.Model) {
         var snapshot = dataSource.snapshot()
         snapshot.deleteItems([item])
         dataSource.apply(snapshot)
     }
     
+    @MainActor
     func insertItem(_ item: MindCell.Model) {
         var snapshot = dataSource.snapshot()
         if let first = snapshot.itemIdentifiers.first {

@@ -26,6 +26,10 @@ final class MindsListAssembly {
         let viewController = MindsListViewController(presenter: presenter)
         presenter.view = viewController
         
+        if let mindService = mindService as? MindService {
+            mindService.delegate = presenter
+        }
+        
         return Module(viewController: viewController, moduleInput: presenter)
     }
 }
