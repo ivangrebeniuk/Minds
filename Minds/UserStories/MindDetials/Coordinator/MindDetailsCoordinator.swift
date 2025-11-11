@@ -48,4 +48,9 @@ extension MindDetailsCoordinator: IMindDetailsOutput {
         moduleOutput?.didSaveMind()
         transitionHandler?.popViewController(animated: true)
     }
+    
+    @MainActor
+    func dismiss() {
+        transitionHandler?.popViewController(animated: true)
+    }
 }

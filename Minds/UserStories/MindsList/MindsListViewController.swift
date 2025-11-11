@@ -67,6 +67,10 @@ final class MindsListViewController: UIViewController {
         setupTableView()
     }
     
+    private func setUpErrorAlert() {
+        
+    }
+    
     private func setUpNavigationBar() {
         navigationItem.title = .navBarTitle
         setUpAddNewMindButton()
@@ -149,7 +153,7 @@ extension MindsListViewController: UITableViewDelegate {
 
 // MARK: - IMindsListView
 
-extension MindsListViewController: @preconcurrency IMindsListView {
+extension MindsListViewController: IMindsListView {
     
     @MainActor
     func updateTableView(with items: [MindCell.Model]) {
@@ -176,6 +180,17 @@ extension MindsListViewController: @preconcurrency IMindsListView {
         }
         
         dataSource.apply(snapshot)
+    }
+    
+    @MainActor
+    func showDeletingErrorAlert() {
+        let alertController = UIAlertController(
+            title: "Error",
+            message: "Failed to delete mind.",
+            preferredStyle: .alert
+        )
+        alertController.addAction(UIAlertAction(title: "OK", style: .default) { _ in })
+        present(alertController, animated: true)
     }
 }
 

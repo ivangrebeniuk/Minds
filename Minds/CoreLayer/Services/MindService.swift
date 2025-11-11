@@ -20,7 +20,7 @@ protocol MindServiceProtocol {
         
     func saveMind(_ mind: Mind) async throws
     
-    func deleteMind(withId id: UUID) async
+    func deleteMind(withId id: UUID) async throws
 }
 
 final class MindService {
@@ -97,12 +97,8 @@ extension MindService: MindServiceProtocol {
         await reloadCache()
     }
     
-    func deleteMind(withId id: UUID) async {
-        do {
-            try await coreDataService.delete(with: id)
-            await reloadCache()
-        } catch {
-            print("⚠️ Core Data deleting error: \(error)")
-        }
+    func deleteMind(withId id: UUID) async throws {
+        try await coreDataService.delete(with: id)
+        await reloadCache()
     }
 }

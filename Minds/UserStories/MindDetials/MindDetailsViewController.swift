@@ -141,4 +141,18 @@ extension MindDetailsViewController: IMindDetailsView {
         textView.text = "Enter your mind..."
         textView.textColor = .secondaryLabel
     }
+    
+    func showErrorAlert(action: @escaping () -> Void) {
+        let alertController = UIAlertController(
+            title: "Error",
+            message: "Something went wrong. Please try again later.",
+            preferredStyle: .alert
+        )
+        
+        let alertAction = UIAlertAction(title: "OK", style: .default) { _ in
+            action()
+        }
+        alertController.addAction(alertAction)
+        present(alertController, animated: true)
+    }
 }
