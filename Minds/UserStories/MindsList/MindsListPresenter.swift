@@ -23,6 +23,8 @@ protocol IMindsListView: AnyObject {
     @MainActor
     func deleteItem(_ item: MindCell.Model)
     
+    @MainActor
+    func showDeletingErrorAlert()
 }
 
 protocol IMindsListPresenter: AnyObject {
@@ -92,10 +94,16 @@ extension MindsListPresenter: IMindsListPresenter {
         guard index < models.count else {
             return
         }
-        let model = models.remove(at: index)
+        let model = models[index]
         Task { [weak self] in
             guard let self else { return }
-            await mindService.deleteMind(withId: model.id)
+            do {
+                try await mindService.deleteMind(withId: model.id)
+                models.remove(at: index)
+                view?.deleteItem(model)
+            } catch {
+                view?.showDeletingErrorAlert()
+            }
         }
     }
 }

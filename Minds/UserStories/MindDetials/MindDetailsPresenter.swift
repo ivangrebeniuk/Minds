@@ -11,6 +11,9 @@ protocol IMindDetailsOutput: AnyObject {
     
     @MainActor
     func didTapSaveButton()
+    
+    @MainActor
+    func dismiss()
 }
 
 protocol IMindDetailsView: AnyObject {
@@ -18,6 +21,8 @@ protocol IMindDetailsView: AnyObject {
     func updateUI(with text: String)
     
     func setUpEmptyState()
+    
+    func showErrorAlert(action: @escaping (() -> Void))
 }
 
 protocol IMindDetailsPresenter {
@@ -59,6 +64,44 @@ final class MindDetailsPresenter {
         let minds = mindService.cachedMinds
         mindModel = minds.first(where: { $0.id == id })
     }
+    
+    @MainActor
+    private func saveNewMind(text: String) {
+        let newMind = Mind(
+            id: UUID(),
+            text: text,
+            timestamp: .now
+        )
+        Task {
+            do {
+                try await mindService.saveMind(newMind)
+                output?.didTapSaveButton()
+            } catch {
+                view?.showErrorAlert { [weak self] in
+                    guard let self else { return }
+                    output?.dismiss()
+                }
+            }
+        }
+    }
+    
+    @MainActor
+    func updateMind(text: String) {
+        Task { [weak self] in
+            guard let self, var mindModel else { return }
+            mindModel.timestamp = .now
+            mindModel.text = text
+            do {
+                try await mindService.saveMind(mindModel)
+                output?.didTapSaveButton()
+            } catch {
+                view?.showErrorAlert { [weak self] in
+                    guard let self else { return }
+                    output?.dismiss()
+                }
+            }
+        }
+    }
 }
 
 // MARK: - IMindDetailsPresenter
@@ -83,31 +126,9 @@ extension MindDetailsPresenter: IMindDetailsPresenter {
     @MainActor
     func didTapSaveButton(with text: String) {
         if mindId == nil {
-            let newMind = Mind(
-                id: UUID(),
-                text: text,
-                timestamp: .now
-            )
-            Task {
-                do {
-                    try await mindService.saveMind(newMind)
-                    output?.didTapSaveButton()
-                } catch {
-                    print("Не удалось сохранить новую заметку")
-                }
-            }
+            saveNewMind(text: text)
         } else {
-            Task { [weak self] in
-                guard let self, var mindModel else { return }
-                mindModel.timestamp = .now
-                mindModel.text = text
-                do {
-                    try await mindService.saveMind(mindModel)
-                    output?.didTapSaveButton()
-                } catch {
-                    print("Не удалось обновить заметку заметку")
-                }
-            }
+            updateMind(text: text)
         }
     }
 }
