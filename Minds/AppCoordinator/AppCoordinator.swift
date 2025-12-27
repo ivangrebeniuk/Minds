@@ -19,7 +19,7 @@ final class AppCoordinator {
         self.window = window
     }
     
-    func start() {
+    @MainActor func start() {
         let navigationController = UINavigationController()
         window.rootViewController = navigationController
         window.makeKeyAndVisible()

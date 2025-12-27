@@ -7,9 +7,9 @@
 
 import Foundation
 
-@MainActor
 protocol MindServiceDelegate: AnyObject {
     
+    @MainActor
     func didReloadCache()
 }
 
@@ -27,8 +27,9 @@ final class MindService {
     
     weak var delegate: MindServiceDelegate?
     private let coreDataService: CoreDataServiceProtocol
+
     @MainActor
-    private lazy var minds: [Mind] = []
+    private var minds: [Mind] = []
     
     init(coreDataService: CoreDataServiceProtocol) {
         self.coreDataService = coreDataService

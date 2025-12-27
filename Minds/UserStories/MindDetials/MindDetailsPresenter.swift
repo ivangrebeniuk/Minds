@@ -26,7 +26,6 @@ protocol IMindDetailsView: AnyObject {
 }
 
 protocol IMindDetailsPresenter {
-    
     @MainActor
     func viewDidLoad()
       
@@ -34,6 +33,7 @@ protocol IMindDetailsPresenter {
     func didTapSaveButton(with text: String)
 }
 
+@MainActor
 final class MindDetailsPresenter {
     
     // Dependincies
@@ -59,13 +59,11 @@ final class MindDetailsPresenter {
     
     // MARK: Private
     
-    @MainActor
     private func getMindModel(byId id: UUID) {
         let minds = mindService.cachedMinds
         mindModel = minds.first(where: { $0.id == id })
     }
     
-    @MainActor
     private func saveNewMind(text: String) {
         let newMind = Mind(
             id: UUID(),
@@ -85,7 +83,6 @@ final class MindDetailsPresenter {
         }
     }
     
-    @MainActor
     func updateMind(text: String) {
         Task { [weak self] in
             guard let self, var mindModel else { return }
@@ -102,13 +99,20 @@ final class MindDetailsPresenter {
             }
         }
     }
+    
+    private func checkTextExist(_ text: String) -> Bool {
+        if text.trimmingCharacters(in: .whitespacesAndNewlines).count > 0 {
+            return true
+        } else {
+            return false
+        }
+    }
 }
 
 // MARK: - IMindDetailsPresenter
 
 extension MindDetailsPresenter: IMindDetailsPresenter {
     
-    @MainActor
     func viewDidLoad() {
         guard let mindId else {
             view?.setUpEmptyState()
@@ -123,8 +127,12 @@ extension MindDetailsPresenter: IMindDetailsPresenter {
         }
     }
     
-    @MainActor
     func didTapSaveButton(with text: String) {
+        guard checkTextExist(text) else {
+            output?.dismiss()
+            return
+        }
+        
         if mindId == nil {
             saveNewMind(text: text)
         } else {

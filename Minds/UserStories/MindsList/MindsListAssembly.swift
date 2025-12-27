@@ -16,6 +16,7 @@ final class MindsListAssembly {
         self.mindService = mindService
     }
     
+    @MainActor
     func assemble(output: IMindsListOutput) -> Module<IMindsListModuleInput> {
         let viewModelFactory = MindsListViewModelFactory()
         let presenter = MindsListPresenter(

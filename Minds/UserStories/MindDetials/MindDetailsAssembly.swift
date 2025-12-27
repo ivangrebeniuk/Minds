@@ -16,6 +16,7 @@ final class MindDetailsAssembly {
         self.mindService = mindService
     }
     
+    @MainActor
     func assemble(with mindId: UUID?, output: IMindDetailsOutput?) -> UIViewController {
         
         let presenter = MindDetailsPresenter(

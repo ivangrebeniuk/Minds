@@ -10,6 +10,7 @@ import UIKit
 
 protocol IMindsListModuleInput: AnyObject {
     
+    @MainActor
     func didSaveMind()
 }
 
@@ -30,6 +31,7 @@ final class MindListCoordinator {
         self.navigationController = navigationController
     }
     
+    @MainActor
     func start(with navigationController: UINavigationController) {
         self.navigationController = navigationController
         let mindListModule = mindsListAssembly.assemble(output: self)
@@ -42,6 +44,7 @@ final class MindListCoordinator {
 
 extension MindListCoordinator: IMindsListOutput {
     
+    @MainActor
     func didSelectMind(with id: UUID?) {
         mindDetailsCoordinator.start(
             from: navigationController,

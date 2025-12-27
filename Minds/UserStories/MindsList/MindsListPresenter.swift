@@ -9,21 +9,18 @@ import Foundation
 
 protocol IMindsListOutput: AnyObject {
     
+    @MainActor
     func didSelectMind(with id: UUID?)
 }
 
 protocol IMindsListView: AnyObject {
     
-    @MainActor
     func updateTableView(with: [MindCell.Model])
     
-    @MainActor
     func insertItem(_ item: MindCell.Model)
     
-    @MainActor
     func deleteItem(_ item: MindCell.Model)
     
-    @MainActor
     func showDeletingErrorAlert()
 }
 
@@ -42,6 +39,7 @@ protocol IMindsListPresenter: AnyObject {
     func didDeleteMind(at index: Int)
 }
 
+@MainActor
 final class MindsListPresenter {
     
     weak var view: IMindsListView?
@@ -69,7 +67,6 @@ final class MindsListPresenter {
 
 extension MindsListPresenter: IMindsListPresenter {
     
-    @MainActor
     func viewDidLoad() {
         let minds = mindService.cachedMinds
         models = minds.map {
@@ -83,13 +80,11 @@ extension MindsListPresenter: IMindsListPresenter {
         output?.didSelectMind(with: nil)
     }
     
-    @MainActor
     func didSelectMind(at index: Int) {
         let model = models[index]
         output?.didSelectMind(with: model.id)
     }
     
-    @MainActor
     func didDeleteMind(at index: Int) {
         guard index < models.count else {
             return
@@ -99,7 +94,6 @@ extension MindsListPresenter: IMindsListPresenter {
             guard let self else { return }
             do {
                 try await mindService.deleteMind(withId: model.id)
-                models.remove(at: index)
                 view?.deleteItem(model)
             } catch {
                 view?.showDeletingErrorAlert()
@@ -110,9 +104,8 @@ extension MindsListPresenter: IMindsListPresenter {
 
 // MARK: -  IMindsListModuleInput
 
-extension MindsListPresenter: @preconcurrency IMindsListModuleInput {
+extension MindsListPresenter: IMindsListModuleInput {
     
-    @MainActor
     func didSaveMind() {
         let minds = mindService.cachedMinds
         models = minds.map {
@@ -124,7 +117,6 @@ extension MindsListPresenter: @preconcurrency IMindsListModuleInput {
 
 extension MindsListPresenter: MindServiceDelegate {
     
-    @MainActor
     func didReloadCache() {
         let minds = mindService.cachedMinds
         models = minds.map { self.viewModelFactory.makeViewModel($0) }

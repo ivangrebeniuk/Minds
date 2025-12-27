@@ -24,6 +24,7 @@ final class MindDetailsCoordinator {
         self.mindDetailsAssembly = mindDetailsAssembly
     }
     
+    @MainActor
     func start(
         from transitionHandler: UINavigationController?,
         mindId: UUID?,
